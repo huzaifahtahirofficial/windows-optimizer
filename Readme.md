@@ -19,6 +19,9 @@ The software is engineered with a modular "Neural Engine" design:
 - **Execution Layer:** Shell32 API for high-level process management.
 - **Visuals:** Layered Windows (WS_EX_LAYERED) for alpha-blended transparency and GDI Cleartype font rendering.
 
+![Windows Optimizer Banner](windows-optimizer-banner.png)
+
+
 ---
 
 ## 3. Feature Intelligence (The Engine)
