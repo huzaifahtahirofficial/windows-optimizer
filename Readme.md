@@ -4,9 +4,6 @@
 **Developer:** Skeler Labs (Research & Development Division)  
 **Classification:** System Utility / Performance Optimization  
 
-
-
-
 ---
 
 ## 1. Project Overview
@@ -18,9 +15,6 @@ The software is engineered with a modular "Neural Engine" design:
 - **UI Framework:** Win32 API (User32, GDI32, ComCtl32)
 - **Execution Layer:** Shell32 API for high-level process management.
 - **Visuals:** Layered Windows (WS_EX_LAYERED) for alpha-blended transparency and GDI Cleartype font rendering.
-
-![Windows Optimizer Banner](windows-optimizer-banner.png)
-
 
 ---
 
