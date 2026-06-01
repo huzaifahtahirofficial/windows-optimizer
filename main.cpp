@@ -1,155 +1,145 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <shellapi.h>
-#include <string>
+#include <shlobj.h>
+#include <stdio.h>
 #include "resource.h"
 
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "gdi32.lib")
 #pragma comment(lib, "shell32.lib")
 
-// Global variables
 HINSTANCE hInst;
-HWND hWndMain;
-HFONT hFontMain, hFontSmall, hFontTitle;
-char statusMsg[256] = "SYSTEM SECURE. READY FOR OPTIMIZATION...";
+HFONT hF_Title, hF_Btn, hF_Log, hF_Score;
+HWND hLog;
+int optScore = 35; // Initial score
 
-COLORREF clrBack = RGB(10, 10, 12);
-COLORREF clrAccent = RGB(0, 195, 255);
-COLORREF clrWhite = RGB(245, 245, 247);
+// --- DESIGN SYSTEM ---
+COLORREF clrBack   = RGB(10, 10, 15);     
+COLORREF clrBtn    = RGB(25, 25, 35);   
+COLORREF clrCyan   = RGB(0, 210, 255);  
+COLORREF clrWhite  = RGB(245, 245, 250); 
 
-#define ID_BTN_AETHER 201
-#define ID_BTN_KINETIC 202
-#define ID_BTN_FLUX 203
-#define ID_BTN_CORESYNC 204
+#define ID_SCRUB 701
+#define ID_OVERDRIVE 702
+#define ID_STEALTH 703
+#define ID_SENTINEL 704
 
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-void ApplyAppleStyle(HWND);
-void UpdateStatus(HWND hWnd, const char* msg);
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-    hInst = hInstance;
-    InitCommonControls();
-    
-    const char* CLASS_NAME = "SkelerLabs_OS";
-
-    WNDCLASSEX wc = {0};
-    wc.cbSize = sizeof(WNDCLASSEX);
-    wc.lpfnWndProc = WndProc;
-    wc.hInstance = hInstance;
-    wc.lpszClassName = CLASS_NAME; // FIXED: Changed from hClassName
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = CreateSolidBrush(clrBack);
-    wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APP_ICON));
-    wc.hIconSm = wc.hIcon;
-
-    if (!RegisterClassEx(&wc)) return 0;
-
-    hWndMain = CreateWindowEx(
-        WS_EX_LAYERED, 
-        CLASS_NAME, 
-        "SKELER SECURITY | NEURAL ENGINE", 
-        WS_OVERLAPPEDWINDOW, 
-        CW_USEDEFAULT, CW_USEDEFAULT, 900, 650, 
-        NULL, NULL, hInstance, NULL
-    );
-
-    if (!hWndMain) return 0;
-
-    SetLayeredWindowAttributes(hWndMain, 0, 245, LWA_ALPHA);
-    ShowWindow(hWndMain, nCmdShow);
-    UpdateWindow(hWndMain);
-
-    MSG msg;
-    while (GetMessage(&msg, NULL, 0, 0)) { 
-        TranslateMessage(&msg); 
-        DispatchMessage(&msg); 
-    }
-    return 0;
+void Log(const char* m) {
+    SendMessage(hLog, LB_ADDSTRING, 0, (LPARAM)m);
+    SendMessage(hLog, WM_VSCROLL, SB_BOTTOM, 0);
 }
 
-void UpdateStatus(HWND hWnd, const char* msg) {
-    strncpy(statusMsg, msg, 255);
-    InvalidateRect(hWnd, NULL, TRUE);
-    UpdateWindow(hWnd);
+void RunTool(const char* t, const char* c) {
+    char cmd[1024];
+    sprintf(cmd, "/c title X-INSPECT: %s && color 0b && echo [!] STARTING %s... && %s && echo. && echo [SUCCESS] FINISHED. && pause", t, t, c);
+    ShellExecute(NULL, "open", "cmd.exe", cmd, NULL, SW_SHOWNORMAL);
 }
 
-void ApplyAppleStyle(HWND hWnd) {
-    hFontTitle = CreateFont(42, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, "Segoe UI");
-    hFontMain = CreateFont(22, 0, 0, 0, FW_MEDIUM, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, "Segoe UI");
-    hFontSmall = CreateFont(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, "Consolas");
-
-    CreateWindowEx(0, "BUTTON", "AETHER SCRUB", WS_VISIBLE | WS_CHILD | BS_FLAT, 50, 150, 380, 180, hWnd, (HMENU)ID_BTN_AETHER, hInst, NULL);
-    CreateWindowEx(0, "BUTTON", "KINETIC OVERDRIVE", WS_VISIBLE | WS_CHILD | BS_FLAT, 450, 150, 380, 180, hWnd, (HMENU)ID_BTN_KINETIC, hInst, NULL);
-    CreateWindowEx(0, "BUTTON", "FLUX OPTIMIZER", WS_VISIBLE | WS_CHILD | BS_FLAT, 50, 350, 380, 180, hWnd, (HMENU)ID_BTN_FLUX, hInst, NULL);
-    CreateWindowEx(0, "BUTTON", "CORE SYNC", WS_VISIBLE | WS_CHILD | BS_FLAT, 450, 350, 380, 180, hWnd, (HMENU)ID_BTN_CORESYNC, hInst, NULL);
-
-    for (int i = 201; i <= 204; i++) {
-        SendMessage(GetDlgItem(hWnd, i), WM_SETFONT, (WPARAM)hFontMain, TRUE);
-    }
-}
-
-LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp) {
     switch (msg) {
-        case WM_CREATE: 
-            ApplyAppleStyle(hWnd); 
-            break;
+        case WM_CREATE: {
+            hF_Title = CreateFont(50,0,0,0,FW_BOLD,0,0,0,0,0,0,CLEARTYPE_QUALITY,0,"Segoe UI");
+            hF_Btn   = CreateFont(20,0,0,0,FW_BOLD,0,0,0,0,0,0,CLEARTYPE_QUALITY,0,"Segoe UI");
+            hF_Log   = CreateFont(15,0,0,0,0,0,0,0,0,0,0,CLEARTYPE_QUALITY,0,"Consolas");
+            hF_Score = CreateFont(70,0,0,0,FW_BOLD,0,0,0,0,0,0,CLEARTYPE_QUALITY,0,"Segoe UI");
+
+            CreateWindowEx(0, "BUTTON", "SYSTEM SCRUB", WS_VISIBLE|WS_CHILD|BS_OWNERDRAW, 50, 430, 430, 100, hWnd, (HMENU)ID_SCRUB, hInst, 0);
+            CreateWindowEx(0, "BUTTON", "NEURAL OVERDRIVE", WS_VISIBLE|WS_CHILD|BS_OWNERDRAW, 500, 430, 430, 100, hWnd, (HMENU)ID_OVERDRIVE, hInst, 0);
+            CreateWindowEx(0, "BUTTON", "AEGIS STEALTH", WS_VISIBLE|WS_CHILD|BS_OWNERDRAW, 50, 550, 430, 100, hWnd, (HMENU)ID_STEALTH, hInst, 0);
+            CreateWindowEx(0, "BUTTON", "SENTINEL SCAN", WS_VISIBLE|WS_CHILD|BS_OWNERDRAW, 500, 550, 430, 100, hWnd, (HMENU)ID_SENTINEL, hInst, 0);
+
+            hLog = CreateWindowEx(0, "LISTBOX", NULL, WS_VISIBLE|WS_CHILD|LBS_NOSEL|WS_VSCROLL, 430, 170, 500, 230, hWnd, NULL, hInst, 0);
+            SendMessage(hLog, WM_SETFONT, (WPARAM)hF_Log, TRUE);
+            Log(" [X-INSPECT] CORE ENGINE INITIALIZED.");
+        } break;
+
         case WM_PAINT: {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            RECT rect; GetClientRect(hWnd, &rect);
+            PAINTSTRUCT ps; HDC hdc = BeginPaint(hWnd, &ps);
+            RECT r; GetClientRect(hWnd, &r);
             SetBkMode(hdc, TRANSPARENT);
-            
-            SelectObject(hdc, hFontTitle); SetTextColor(hdc, clrWhite);
-            TextOut(hdc, 50, 40, "SKELER SECURITY", 15);
+            HBRUSH bg = CreateSolidBrush(clrBack); FillRect(hdc, &r, bg); DeleteObject(bg);
 
-            SelectObject(hdc, hFontSmall); SetTextColor(hdc, clrAccent);
-            TextOut(hdc, 55, 90, "SYSTEM INTELLIGENCE ACTIVATED // SKELER LABS", 45);
+            SelectObject(hdc, hF_Title); SetTextColor(hdc, clrWhite);
+            TextOut(hdc, 50, 40, "X-INSPECT", 9);
+            SetTextColor(hdc, clrCyan); SelectObject(hdc, hF_Log);
+            TextOut(hdc, 55, 105, "ADVANCED SYSTEM DIAGNOSTICS & PERFORMANCE ENGINE", 48);
 
-            RECT footer = {0, rect.bottom - 40, rect.right, rect.bottom};
-            HBRUSH hFootB = CreateSolidBrush(RGB(20, 20, 25));
-            FillRect(hdc, &footer, hFootB); DeleteObject(hFootB);
+            // Circular Dashboard
+            HPEN p = CreatePen(PS_SOLID, 15, clrCyan); SelectObject(hdc, p);
+            Arc(hdc, 80, 170, 330, 420, 0, 0, 0, 0); DeleteObject(p);
 
-            SetTextColor(hdc, RGB(0, 255, 120));
-            TextOut(hdc, 20, rect.bottom - 30, statusMsg, strlen(statusMsg));
+            char s[10]; sprintf(s, "%d", optScore);
+            SelectObject(hdc, hF_Score); SetTextColor(hdc, clrWhite);
+            TextOut(hdc, 135, 235, s, strlen(s));
+            SelectObject(hdc, hF_Log); SetTextColor(hdc, clrCyan);
+            TextOut(hdc, 145, 320, "OPT-SCORE", 9);
 
             EndPaint(hWnd, &ps);
         } break;
 
+        case WM_DRAWITEM: {
+            LPDRAWITEMSTRUCT p = (LPDRAWITEMSTRUCT)lp;
+            bool dn = p->itemState & ODS_SELECTED;
+            HBRUSH b = CreateSolidBrush(dn ? clrCyan : clrBtn);
+            FillRect(p->hDC, &p->rcItem, b); DeleteObject(b);
+            HBRUSH br = CreateSolidBrush(clrCyan); FrameRect(p->hDC, &p->rcItem, br); DeleteObject(br);
+            SetTextColor(p->hDC, dn ? clrBack : clrWhite);
+            SelectObject(p->hDC, hF_Btn); SetBkMode(p->hDC, 1);
+            char t[128]; GetWindowText(p->hwndItem, t, 128);
+            DrawText(p->hDC, t, -1, &p->rcItem, DT_CENTER|DT_VCENTER|DT_SINGLELINE);
+            return TRUE;
+        }
+
+        case WM_CTLCOLORLISTBOX: {
+            HDC hdc = (HDC)wp; SetTextColor(hdc, clrCyan); SetBkColor(hdc, RGB(20,20,30));
+            return (LRESULT)CreateSolidBrush(RGB(20,20,30));
+        }
+
         case WM_COMMAND: {
-            int id = LOWORD(wParam);
-            switch (id) {
-                case ID_BTN_AETHER:
-                    UpdateStatus(hWnd, "STATUS: INCINERATING SYSTEM JUNK...");
-                    ShellExecute(NULL, "open", "cleanmgr.exe", "/d C:", NULL, SW_SHOWNORMAL);
-                    system("start cmd /c \"title SkelerSecurity Engine && color 0b && echo [!] SCRUBBING SYSTEM CACHE... && del /s /f /q %temp%\\*.* && echo [!] CLEANUP COMPLETE. && pause\"");
-                    UpdateStatus(hWnd, "STATUS: AETHER SCRUB COMPLETE.");
-                    break;
-
-                case ID_BTN_KINETIC:
-                    UpdateStatus(hWnd, "STATUS: ENGAGING KINETIC GRAPHICS OVERDRIVE...");
-                    system("powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c");
-                    ShellExecute(NULL, "open", "ms-settings:display-advancedgraphics", NULL, NULL, SW_SHOWNORMAL);
-                    UpdateStatus(hWnd, "STATUS: GRAPHICS PRIORITIZATION ACTIVE.");
-                    break;
-
-                case ID_BTN_FLUX:
-                    UpdateStatus(hWnd, "STATUS: RE-ROUTING DNS PATHWAYS...");
-                    system("ipconfig /flushdns");
-                    UpdateStatus(hWnd, "STATUS: NETWORK FLUX OPTIMIZED.");
-                    break;
-
-                case ID_BTN_CORESYNC:
-                    UpdateStatus(hWnd, "STATUS: VALIDATING CORE SYSTEM INTEGRITY...");
-                    ShellExecute(NULL, "runas", "cmd.exe", "/k title SkelerSecurity Sentinel && sfc /scannow", NULL, SW_SHOWNORMAL);
-                    UpdateStatus(hWnd, "STATUS: CORE SCAN INITIATED IN SEPARATE TERMINAL.");
-                    break;
+            int id = LOWORD(wp);
+            if(id == ID_SCRUB) {
+                Log(" [!] EXECUTING SYSTEM SCRUB...");
+                ShellExecute(0, "open", "cleanmgr.exe", "/d C:", 0, 1);
+                RunTool("SCRUB", "del /q /s %temp%\\*.* && del /q /s C:\\Windows\\Temp\\*.*");
+                optScore += 15;
             }
+            if(id == ID_OVERDRIVE) {
+                Log(" [!] ENGAGING NEURAL OVERDRIVE...");
+                system("powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c");
+                ShellExecute(0, "open", "ms-settings:display-advancedgraphics", 0, 0, 1);
+                optScore += 10;
+            }
+            if(id == ID_STEALTH) {
+                Log(" [!] SEVERING TELEMETRY UPLINKS...");
+                RunTool("STEALTH", "sc stop DiagTrack && sc config DiagTrack start= disabled && ipconfig /flushdns");
+                optScore += 20;
+            }
+            if(id == ID_SENTINEL) {
+                Log(" [!] STARTING SENTINEL REPAIR SCAN...");
+                RunTool("SENTINEL", "sfc /scannow");
+                optScore += 20;
+            }
+            if(optScore > 100) optScore = 100;
+            InvalidateRect(hWnd, 0, 1);
         } break;
 
-        case WM_CTLCOLORBTN: return (LRESULT)CreateSolidBrush(clrBack);
         case WM_DESTROY: PostQuitMessage(0); break;
-        default: return DefWindowProc(hWnd, msg, wParam, lParam);
+        default: return DefWindowProc(hWnd, msg, wp, lp);
     }
+    return 0;
+}
+
+int WINAPI WinMain(HINSTANCE h, HINSTANCE p, LPSTR c, int s) {
+    hInst = h;
+    WNDCLASSEX wc = {0};
+    wc.cbSize = sizeof(WNDCLASSEX);
+    wc.lpfnWndProc = WndProc; wc.hInstance = h; 
+    wc.hIcon = LoadIcon(h, MAKEINTRESOURCE(IDI_APP_ICON));
+    wc.hIconSm = wc.hIcon;
+    wc.hCursor = LoadCursor(0, IDC_ARROW); wc.lpszClassName = "XINSPECT";
+    RegisterClassEx(&wc);
+    CreateWindow("XINSPECT", "X-INSPECT // System Intelligence", WS_OVERLAPPEDWINDOW|WS_VISIBLE, 100, 100, 1030, 750, 0, 0, h, 0);
+    MSG msg; while(GetMessage(&msg, 0, 0, 0)) { TranslateMessage(&msg); DispatchMessage(&msg); }
     return 0;
 }

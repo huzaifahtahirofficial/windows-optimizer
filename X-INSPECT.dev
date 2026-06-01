@@ -6,12 +6,12 @@ Ver=2
 ObjFiles=
 Includes=
 Libs=
-PrivateResource=X-INSPECT_private.rc
+PrivateResource=
 ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker=-lcomctl32_@@_-lgdi32_@@_-lshell32_@@_
+Linker=-lcomctl32_@@_-lgdi32_@@_-lshell32_@@_-lshlwapi_@@_
 IsCpp=1
 Icon=
 ExeOutput=
@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;8;0;0;0
-UnitCount=5
+UnitCount=2
 
 [VersionInfo]
 Major=1
@@ -60,25 +60,6 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit2]
-FileName=icon.ico
-Folder=
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit3]
-FileName=resource.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit4]
 FileName=resources.rc
 Folder=Resources
@@ -89,6 +70,15 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit5]
+FileName=Readme.md
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2]
 FileName=Readme.md
 Folder=
 Compile=1
