@@ -1,80 +1,85 @@
-# SkelerSecurity System Optimizer Pro
-### Neural Engine Deployment Documentation
-**Version:** 1.0.4  
+# X-INSPECT // System Intelligence Suite
+### Quantum Performance & Diagnostics Documentation
+**Version:** 1.2.0 (Flagship Edition)  
 **Developer:** Skeler Labs (Research & Development Division)  
-**Classification:** System Utility / Performance Optimization  
+**Project Lead:** SkelerSecurity R&D  
 
 ---
 
 ## 1. Project Overview
-The **SkelerSecurity System Optimizer Pro** is a high-performance C++ Windows application built using the Win32 API. It is designed to bridge the gap between deep system-level optimization and premium "Apple-style" user experience. The tool focuses on four pillars: Digital Incineration (Cleanup), Kinetic Scaling (Graphics), Latency Flux (Network), and Sentinel Integrity (Security).
+**X-INSPECT** is a high-tier system optimization and diagnostic engine. It transitions from traditional cleanup utilities into a proactive performance suite. Designed with a "Stark-Industrial" aesthetic, it utilizes native Windows hooks to provide real-time optimization scoring, visual execution proof, and deep-kernel security scans.
 
 ## 2. Technical Architecture
-The software is engineered with a modular "Neural Engine" design:
-- **Core:** Native C++ (Standard ISO 14)
-- **UI Framework:** Win32 API (User32, GDI32, ComCtl32)
-- **Execution Layer:** Shell32 API for high-level process management.
-- **Visuals:** Layered Windows (WS_EX_LAYERED) for alpha-blended transparency and GDI Cleartype font rendering.
+The software is built on a high-speed, zero-dependency C++ framework:
+- **Core Engine:** Native Win32 API (C++ ISO 14).
+- **UI Architecture:** **Owner-Drawn GDI Engine** (Bypasses standard Windows themes for custom Slate-Panel rendering).
+- **Graphics:** Alpha-blended Layered Windows (`WS_EX_LAYERED`) with high-fidelity GDI ClearType rendering.
+- **Analytics:** Integrated **Quantum Dashboard** with real-time `OPT-SCORE` calculation and circular HUD.
+
+![SkelerSecurity Windows Optimizer Banner](windows-optimizer-banner.png)
 
 ---
 
-## 3. Feature Intelligence (The Engine)
+## 3. Neural Engine Protocols
 
-### 3.1 Aether Scrub (Digital Incineration)
-- **Logic:** Performs recursive cleanup of system and user-level temporary directories.
-- **Process:**
-  - Invokes `cleanmgr.exe` for native disk sanitization.
-  - Recursively deletes `%temp%` using `del /s /f /q`.
-- **Visibility:** Launches a dedicated terminal instance so users can monitor the deletion of junk in real-time.
+### 3.1 System Scrub (Digital Incineration)
+- **Logic:** Merges custom temporary file incineration with the native Windows Disk Cleanup Utility.
+- **Process:** Triggers `cleanmgr.exe` for driver-level cleanup and executes recursive deletion of `%temp%` and `C:\Windows\Temp`.
+- **Proof:** Spawns a visible terminal showing real-time file incineration.
 
-### 3.2 Kinetic Overdrive (Graphics & Power)
-- **Logic:** Adjusts the Windows Power Management System to eliminate CPU throttling and prepares the GPU for high-density rendering.
-- **Process:**
-  - Switches active Power Scheme to `High Performance` (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c).
-  - Deep-links to `ms-settings:display-advancedgraphics` to allow user-level Hardware Acceleration.
+### 3.2 Neural Overdrive (Kinetic Performance)
+- **Logic:** Synchronous recalibration of power and graphics planes.
+- **Process:** 
+  - Forces the **High-Performance Power Plan** (GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c).
+  - Deep-links to `Advanced Graphics Settings` for hardware-accelerated GPU scheduling.
 
-### 3.3 Flux Optimizer (Network Latency)
-- **Logic:** Purges the DNS Resolver Cache to resolve routing lag and digital tracking.
-- **Process:** Executes `ipconfig /flushdns` via the system shell.
+### 3.3 Aegis Stealth (Privacy & Network)
+- **Logic:** Hardens the OS by severing diagnostic telemetry and refreshing network pathways.
+- **Process:** 
+  - Physically terminates and disables the `DiagTrack` (Connected User Experiences and Telemetry) service.
+  - Flushes the DNS resolver cache to eliminate routing lag.
 
-### 3.4 Core Sync (Sentinel Shield)
-- **Logic:** Validates the cryptographic signatures of system binaries.
-- **Process:** Requests privilege escalation (`runas`) to execute the **System File Checker** (`sfc /scannow`).
-
----
-
-## 4. Compilation & Deployment
-
-### 4.1 Prerequisites
-- **Compiler:** MinGW-w64 (GCC) or MSVC.
-- **Development Environment:** Dev-C++, Visual Studio, or Code::Blocks.
-- **Operating System:** Windows 10/11 (x64 recommended).
-
-### 4.2 Linker Dependencies
-To build the binary, the following libraries must be linked:
-- `-lcomctl32` (Common Controls)
-- `-lgdi32` (Graphics Engine)
-- `-lshell32` (System Shell & ShellExecute)
-
-### 4.3 Administrator Elevation
-Due to the sensitivity of system directories (Windows/Temp) and security scans (SFC), the application **must be run as Administrator**. 
+### 3.4 Sentinel Scan (Kernel Integrity)
+- **Logic:** Validates the cryptographic signatures of every core Windows binary.
+- **Process:** Spawns an elevated terminal instance to execute the **System File Checker** (`sfc /scannow`).
 
 ---
 
-## 5. Visual Identity (Design Language)
-- **Palette:** 
-  - Void Black (`RGB 10, 10, 12`)
-  - Pulse Blue (`RGB 0, 195, 255`)
-  - Stark White (`RGB 245, 245, 247`)
-- **Typography:** Segoe UI Variable Display for title cards; Consolas for the "Neural Link" status console.
-- **UX:** Responsive grid that adapts to window resizing via `WM_PAINT` and `WM_SIZE` messaging.
+## 4. Quantum Analytics (OPT-SCORE)
+The **OPT-SCORE** is a real-time system health metric ranging from 35 (Base/Dirty) to 100 (Optimized/Safe).
+- **Tracking:** The HUD gauge redraws dynamically as protocols are executed.
+- **Weightage:** 
+  - Sentinel Scan: +20%
+  - Aegis Stealth: +20%
+  - System Scrub: +15%
+  - Neural Overdrive: +10%
 
 ---
 
-## 6. Security Disclosure
-*SkelerSecurity is a CyberSecurity Company.* 
-This tool is designed for optimization. It does not collect user data. All operations are local to the client machine. External system calls are limited to Windows native binaries (`cleanmgr`, `ipconfig`, `powercfg`).
+## 5. Deployment & Build Specs
+
+### 5.1 Prerequisites
+- **Compiler:** MinGW-w64 (TDM-GCC recommended for Dev-C++ users).
+- **Branding:** Requires `icon.ico` and `resources.rc` for proper binary identity.
+
+### 5.2 Linker Dependencies
+To successfully build the **X-INSPECT** binary, the following libraries must be linked:
+- `-lcomctl32` (UI Controls)
+- `-lgdi32` (Dashboard Rendering)
+- `-lshell32` (Process Execution)
+- `-lshlwapi` (System Stats/Trash Sensor)
+
+### 5.3 Execution Requirements
+- **Privilege Level:** Must be executed as **Administrator**.
+- **Pathing:** Ensure the build directory contains no spaces to avoid Dev-C++ `Makefile` errors.
+
+---
+
+## 6. Visual Identity (Stark Design)
+- **Primary Palette:** Midnight Void (`RGB 10, 10, 15`), Slate Panel (`RGB 25, 25, 35`).
+- **Accent:** Electric Cyan (`RGB 0, 210, 255`).
+- **Typography:** Segoe UI (Bold) for UI; Consolas for the Neural Link Console.
 
 ---
 **© 2026 SkelerSecurity. All Rights Reserved.**  
-*Researched and Developed at Skeler Labs.*
+*X-INSPECT is a trademark of Skeler Labs. Built for those who demand peak performance.*
